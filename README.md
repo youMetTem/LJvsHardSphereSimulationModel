@@ -15,7 +15,7 @@ Furthermore, to highlight the strengths and limitations of each motion model, th
 </table>
 
 ## Table of Contents
-1. [Project Overview](#comparison-of-lennard-jones-potential-and-hard-sphere-models--equilibrium-velocity-distributions-and-thermal-properties)
+1. [Project Overview](#comparison-of-lennard-jones-potential-and-hard-sphere-models-equilibrium-velocity-distributions-and-thermal-properties)
 2. [Theoretical Background](#theoretical-background)
 3. [Methodology](#methodology)
 4. [Results](#results)
