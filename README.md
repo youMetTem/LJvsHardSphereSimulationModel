@@ -65,8 +65,88 @@ With Modeling of Van der Waals interaction included in this project, it allow pa
 
 Furthermore, this study aims to compare the the accuracy of speeds distribution data obtain from both *Hard-Sphere* and *Lennard-Jones Potential* model. By reconstruct the speeds distribution of both model with *Cubic Spline interpolation* and compare them with the the Maxwell-Boltzmann theoretical distribution.
 
+
+
+
 ## Methodology
 This project consists of 2 phases the Kinematic Simulation, which generate raw physical data from *Hard-Sphere* and *Lennard-Jones potential* model, and the comparative numerical reconstruction, which analyzes the statistical properties and implement Cubic Spline Interpolation to both model and compare their accuracy. Additionally, 3D dynamic visualization of LJ model, Hard-Sphere model response to rapid temperature decreases and LJ model simulation without external interference is also provided.
+
+Both simulation models system of particles colliding within a bouned 3D cubic container of length $L$. The simulation is initialized with $N$ Spherical particles, each having mass $m$ and radius $R$ at $T$ Temperature in Kelvin. ($L, N, m, T,$ and particle element can be modified in the `main.py` and other update files)
+
+### Simulation Conditions for Lennard-Jones Potential Model
+
+#### Initialization Condition (Lennard-Jones Potential Model)
+1. Positions ($\vec{r}$): Initialized uniformly apart from each other within the domain $(R, L-R)$ for all dimension $(x, y, z)$. Ensuring no two particles overlapping when spawned.
+2. Velocities ($\vec{v}$): Initialized with random components in $(x, y, z)$ but root mean square ($v_{rms}$) of all particles are scaled to theoretical value. Directly correlate Temperature ($T$) with the simulation's environment (As the system stabilized this set Temperature will decreases slightly)
+3. Discrete Time Steps ($dt$): Set as 0.2 factor of the time interval particle takes to move with displacement equals to its radius. Preventing unexpected particle tunnelling from excessive initial $dt$.
+
+#### Kinetic Simulation (Lennard-Jones Potential Model)
+As the Lennard-Jones Potential model incorporates attractive and repulsive forces, depending on distant between every particle, each particle would exhibit non-constant acceleration over time. [Previous project's](https://github.com/youMetTem/NumericalMBPDFreconSimulation/tree/main?tab=readme-ov-file#kinematics-simulation) quadrature method of Euler forward integration will not be appropriate for this, so I utilize the **Velocity Verlet Algorithm** which offers greater energy stability instead.
+
+The **Velocity Verlet Algorithm** consists of two recursive equation:
+
+$$
+\vec{r}_{n+1} = \vec{r}_{n} + \vec{v}_{n}dt + \frac{1}{2} \vec{a}_{n}dt^2
+$$
+
+$$
+\vec{v}_{n+1} = \vec{v}_{n} + \frac{1}{2} (\vec{a}_{n} + \vec{a}_{n+1})dt
+$$
+
+* $\vec{r}_{n}$ or $\vec{x}_{n}$ represents positions at time $t$ ($\vec{r}(t)$)
+* $\vec{r}_{n+1}$ or $\vec{x}_{n+1}$ represents positions at time $t+dt$ ($\vec{r}(t+dt)$)
+* $\vec{v}_{n}$ represents velocities at time $t$ ($\vec{v}(t)$)
+* $\vec{v}_{n+1}$ represents velocities at time $t+dt$ ($\vec{v}(t+dt)$)
+* $\vec{a}_{n}$ represents acceleration at time $t$ ($\vec{a}(t)$)
+* $\vec{a}_{n+1}$ represents acceleration at time $t+dt$ ($\vec{a}(t+dt)$)
+
+
+
+### Simulation Conditions for Hard-Sphere Model
+
+#### Physical Assumptions (Hard-Sphere Model)
+I treat the system as an Ideal Gas. The require specific constraints on how particles behave:
+1. **No Intermolecular Forces**: Particles do not attract or repel each other at a distance. They only interact when they physically collide (*Hard-Sphere Model*).
+2. **Random Motion**: Particles move in straight lines in random directions until they collide with each other or the container wall.
+3. **Elastic Collisions**: All collisions are perfectly elastic, no energy is lost to heat or deformation.
+4. **Small Atomic Radius**: Particles posses very small atomic radius (matching the real size of an Element in nanometers).
+
+Note: As the simulation needs to check for particle colliding, I can not assume of *Point Mass*.
+
+#### Initialization Condition (Hard-Sphere Model)
+1. Positions ($\vec{r}$): Initialized uniformly apart from each other within the domain $(R, L-R)$ for all dimension $(x, y, z)$. Ensuring no two particles overlapping when spawned.
+2. Velocities ($\vec{v}$): Initialized with random components in $(x, y, z)$ but root mean square ($v_{rms}$) of all particles are scaled to theoretical value. Directly correlate Temperature ($T$) with the simulation's environment (Assuming constant total kinetic energy).
+3. Discrete Time Steps ($dt$): Set as 0.2 factor of the time interval particle takes to move with displacement equals to its radius. Preventing unexpected particle tunnelling from excessive initial $dt$.
+
+#### Kinematic Simulation and Collision Handling Mechanism (Hard-Sphere Model)
+* The simulation evolves over discrete time steps $dt$. With each step $dt$, particle position are updated using Forward Euler integration:
+ 
+$$
+\vec{r}(t+dt) = \vec{r}(t) + \vec{v}(t)dt
+$$
+
+* Wall-Particle Collisions: Container walls are treated as infinite mass barriers with perfect elasticity. If particle conponent $r_{i}$ reaches or exceeds the boundary limits $L$, the velocity components perpendicular to the wall will be inverted:
+
+$$
+\vec{v}_{\perp, new} = -\vec{v}_{\perp, old}
+$$
+
+* Particle-Particle Collisions: At every step of evolving $dt$, the scripts checks for overlapping particle pairs. By finding Euclidean distance between each particles pair $i$, $j$ and check if they are below particle's diameter:
+
+$$
+\lVert \vec{r}_{i}-\vec{r}_{j} \rVert \le 2R
+$$
+
+* Once the collision event is triggered, the velocity are updated based on the conservation of linear momentum and kinetic energy. For two particles of equal mass, the post-collision velocities are calculated using vector projection along the line of impact. 
+
+$$
+\vec{v}_{1, f} = \vec{v}_{1, i} - \frac{(\vec{v}_{1, i}-\vec{v}_{2, i}) \cdot (\vec{r}_{1, i}-\vec{r}_{2, i})}{\lVert \vec{r}_{1, i}-\vec{r}_{2, i} \rVert^2} (\vec{r}_{1, i}-\vec{r}_{2, i})
+$$
+$$
+\vec{v}_{2, f} = \vec{v}_{2, i} - \frac{(\vec{v}_{2, i}-\vec{v}_{1, i}) \cdot (\vec{r}_{2, i}-\vec{r}_{1, i})}{\lVert \vec{r}_{2, i}-\vec{r}_{1, i} \rVert^2} (\vec{r}_{2, i}-\vec{r}_{1, i})
+$$
+
+For detailed derivation refer to my previous project in the [Particle-Particle Collisions](https://github.com/youMetTem/NumericalMBPDFreconSimulation/tree/main?tab=readme-ov-file#particle-particle-collisions) Section
 
 
 
