@@ -66,7 +66,7 @@ With Modeling of Van der Waals interaction included in this project, it allow pa
 Furthermore, this study aims to compare the the accuracy of speeds distribution data obtain from both *Hard-Sphere* and *Lennard-Jones Potential* model. By reconstruct the speeds distribution of both model with *Cubic Spline interpolation* and compare them with the the Maxwell-Boltzmann theoretical distribution.
 
 ## Methodology
-This project consists of 2 phasesL the Kinematic Simulation, which generate raw physical data from *Hard-Sphere* and *Lennard-Jones potential* model, and the comparative numerical reconstruction, which analyzes the statistical properties and implement Cubic Spline Interpolation to both model and compare their accuracy. Additionally, 3D dynamic visualization of LJ model, Hard-Sphere model response to rapid temperature decreases and LJ model simulation without external interference is also provided.
+This project consists of 2 phases the Kinematic Simulation, which generate raw physical data from *Hard-Sphere* and *Lennard-Jones potential* model, and the comparative numerical reconstruction, which analyzes the statistical properties and implement Cubic Spline Interpolation to both model and compare their accuracy. Additionally, 3D dynamic visualization of LJ model, Hard-Sphere model response to rapid temperature decreases and LJ model simulation without external interference is also provided.
 
 
 
@@ -142,7 +142,7 @@ Note: For more details on camera control, refer to the official [VPython Documen
 This project was inspired by several excellent resources. Special thanks to the following creators, authors for their high quality educational content:
 * **Physics for Scientists and Engineers (Serway & Jewett)** - Primary reference for the Kinetic Theory of Gases and Maxwell-Boltzmann derivation.
 * **[Molecular interaction and the Lennard-Jones potential](https://youtu.be/Yqj5jHUE3wI?si=RdwNpKF5yMZtr6Yk)** by *Prof. John Holman* - Explanation on the working principle of "Lennard-Jones potential".
-* **[Velocity Verlet Algorithm - Solving equations of motion | Molecular Dynamics](https://www.youtube.com/watch?v=qT8pxV53FA4&t=500s)** by *LearnWithVinay* - Providing theoretical flowchart of the *Velcolity Verlet Algorithm*
+* **[Velocity Verlet Algorithm - Solving equations of motion | Molecular Dynamics](https://www.youtube.com/watch?v=qT8pxV53FA4&t=500s)** by *LearnWithVinay* - Providing theoretical flowchart of the *Velocity Verlet Algorithm*
 * **[Numerical Methods for Engineers](https://youtube.com/playlist?list=PLkZjai-2Jcxn35XnijUtqqEg0Wi5Sn8ab&si=NUFmcl7sFmRZM9Wr)** by *Prof. Jeffrey Chasnov* - Provided the concept of numerical matrix operation and cubic spline interpolation.
 * **[EGME206 Numerical Methods for Engineers, Spring 2021](https://youtube.com/playlist?list=PLLM1AZpDbYI1HPhHWmA-_5YqF26Rnt9ZM&si=xaMQ15EgJC063XTu)** by *Prof. Ittichote Chuckpaiwong* - In-dept explanation in the topic of Regressions.
 * **[VPython for Beginners](https://youtube.com/playlist?list=PLdCdV2GBGyXOnMaPS1BgO7IOU_00ApuMo&si=8MC25WVnnu3wRcem)** by *Let's Code Physics* - Introduce the usage of `VPython` for 3D simulation.
