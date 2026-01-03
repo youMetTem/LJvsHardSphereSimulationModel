@@ -66,7 +66,9 @@ With Modeling of Van der Waals interaction included in this project, it allow pa
 Furthermore, this study aims to compare the the accuracy of speeds distribution data obtain from both *Hard-Sphere* and *Lennard-Jones Potential* model. By reconstruct the speeds distribution of both model with *Cubic Spline interpolation* and compare them with the the Maxwell-Boltzmann theoretical distribution.
 
 ## Methodology
-in process ...
+This project consists of 2 phasesL the Kinematic Simulation, which generate raw physical data from *Hard-Sphere* and *Lennard-Jones potential* model, and the comparative numerical reconstruction, which analyzes the statistical properties and implement Cubic Spline Interpolation to both model and compare their accuracy. Additionally, 3D dynamic visualization of LJ model, Hard-Sphere model response to rapid temperature decreases and LJ model simulation without external interference is also provided.
+
+
 
 ## Results
 in process ...
