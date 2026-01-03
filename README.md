@@ -85,20 +85,19 @@ As the Lennard-Jones Potential model incorporates attractive and repulsive force
 
 The **Velocity Verlet Algorithm** consists of two recursive equation:
 
+$VV1$:
+
 $$
 \vec{r}_{n+1} = \vec{r}_{n} + \vec{v}_{n}dt + \frac{1}{2} \vec{a}_{n}dt^2
 $$
+
+$VV2$:
 
 $$
 \vec{v}_{n+1} = \vec{v}_{n} + \frac{1}{2} (\vec{a}_{n} + \vec{a}_{n+1})dt
 $$
 
-* $\vec{r}_{n}$ or $\vec{x}_{n}$ represents positions at time $t$ ($\vec{r}(t)$)
-* $\vec{r}_{n+1}$ or $\vec{x}_{n+1}$ represents positions at time $t+dt$ ($\vec{r}(t+dt)$)
-* $\vec{v}_{n}$ represents velocities at time $t$ ($\vec{v}(t)$)
-* $\vec{v}_{n+1}$ represents velocities at time $t+dt$ ($\vec{v}(t+dt)$)
-* $\vec{a}_{n}$ represents acceleration at time $t$ ($\vec{a}(t)$)
-* $\vec{a}_{n+1}$ represents acceleration at time $t+dt$ ($\vec{a}(t+dt)$)
+Iterating between 2 aforemention Velocity Verlet Algorithm following provided flowcharts, position and velocity at time $t$ will be solved.
 
 
 
