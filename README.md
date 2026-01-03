@@ -25,7 +25,46 @@ Furthermore, to highlight the strengths and limitations of each motion model, th
 8. [AI Use Declaration](#ai-use-declaration)
 
 ## Theoretical Background
-in process ...
+### The Maxwell-Boltzmann Distribution
+For  an ideal gas at thermodynamic equilibrium, the speeds of particles are not uniform. Instead, they follow a specific probability distribution known as **Maxwell-Boltzmann PDF**.
+
+The probability density function $f(v)$ for a particle of mass $m$ at temperature $T$ is given by:
+
+$$
+f(v)=4\pi \left( \frac{m}{2\pi k_B T} \right)^{3/2} v^2 \exp\left(-\frac{mv^2}{2k_B T}\right)
+$$
+
+To statistically validate that a molecular dynamic simulation is accurate, the distribution of particle speeds from the simulation is compared against the theoretical *Maxwell-Boltzmann Distribution*.
+
+### The Hard-Sphere Model
+The Hard-Sphere model describes a system of particles that interact only through perfect collisions. The interaction potential $V(r)$ is discontinous:
+
+$$
+V_{Hard-Sphere}(r) =
+\begin{cases}
+\infty, & r < \sigma \\
+0, & r \ge \sigma
+\end{cases}
+$$
+
+Where $2R$ is the diameter of the particle and $r$ is the distance between particle centers. Due to the discontinuity in interaction potential, particles simulated from this model will move with constant velocity in straight lines between collisions.
+
+This model only accounts for repulsive forces, lacking the intermolecular attractive component which could be observed in real-world particles. Consequently, it cannot simulate nano cluster or droplet formation upon decreases in temperature.
+
+
+### The Lennard-Jones Potential
+In order to simulate realistic thermal properties and phase behavior, including the formation of nano cluster and droplets, this project utilize the Lennard-Jones (LJ) Potential. The LJ model introduces soft, continous interaction that accounts for both repulsion and attraction.
+
+$$
+V_{LJ}(r) = 4\epsilon \left[ \left( \frac{\sigma}{r} \right)^{12} - \left( \frac{\sigma}{r} \right)^6 \right]
+$$
+
+This potential is characterized by two terms:
+1. Repulsion ($(\sigma/r)^{12}$): Modeling the Pauli exclusion principle.
+2. Attraction ($(\sigma/r)^{6}$): Modeling long-range Van der Waals interaction.
+
+With Modeling of Van der Waals interaction included, this allow particles to bind together when their kinetic energy drops below the potential energy barrier. The enables the simulation of particle clustering and phases transitions.
+
 
 ## Methodology
 in process ...
