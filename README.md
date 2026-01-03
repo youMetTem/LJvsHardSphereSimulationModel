@@ -42,8 +42,8 @@ The Hard-Sphere model describes a system of particles that interact only through
 $$
 V_{Hard-Sphere}(r) =
 \begin{cases}
-\infty, & r < \sigma \\
-0, & r \ge \sigma
+\infty, & r < 2R \\
+0, & r \ge 2R
 \end{cases}
 $$
 
