@@ -83,15 +83,11 @@ Both simulation models system of particles colliding within a bouned 3D cubic co
 #### Kinetic Simulation (Lennard-Jones Potential Model)
 As the Lennard-Jones Potential model incorporates attractive and repulsive forces, depending on distant between every particle, each particle would exhibit non-constant acceleration over time. [Previous project's](https://github.com/youMetTem/NumericalMBPDFreconSimulation/tree/main?tab=readme-ov-file#kinematics-simulation) quadrature method of Euler forward integration will not be appropriate for this, so I utilize the **Velocity Verlet Algorithm** which offers greater energy stability instead.
 
-The **Velocity Verlet Algorithm** consists of two recursive equation:
-
-$VV1$:
+The **Velocity Verlet Algorithm** consists of two recursive equation ($VV1, VV2$):
 
 $$
 \vec{r}_{n+1} = \vec{r}_{n} + \vec{v}_{n}dt + \frac{1}{2} \vec{a}_{n}dt^2
 $$
-
-$VV2$:
 
 $$
 \vec{v}_{n+1} = \vec{v}_{n} + \frac{1}{2} (\vec{a}_{n} + \vec{a}_{n+1})dt
