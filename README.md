@@ -81,7 +81,7 @@ Both simulation models system of particles colliding within a bouned 3D cubic co
 3. Discrete Time Steps ($dt$): Set as 0.2 factor of the time interval particle takes to move with displacement equals to its radius. Preventing unexpected particle tunnelling from excessive initial $dt$.
 
 #### Kinetic Simulation (Lennard-Jones Potential Model)
-As the Lennard-Jones Potential model incorporates attractive and repulsive forces, depending on distant between every particle, each particle would exhibit non-constant acceleration over time. [Previous project's](https://github.com/youMetTem/NumericalMBPDFreconSimulation/tree/main?tab=readme-ov-file#kinematics-simulation) quadrature method of Euler forward integration will not be appropriate for this, so I utilize the **Velocity Verlet Algorithm** which offers greater energy stability instead.
+As the Lennard-Jones Potential model incorporates attractive and repulsive forces, depending on distance between every particle, each particle would exhibit non-constant acceleration over time. [Previous project's](https://github.com/youMetTem/NumericalMBPDFreconSimulation/tree/main?tab=readme-ov-file#kinematics-simulation) quadrature method of Euler forward integration will not be appropriate for this, so I utilize the **Velocity Verlet Algorithm** which offers greater energy stability instead.
 
 The **Velocity Verlet Algorithm** consists of two recursive equation ($VV1, VV2$):
 
@@ -106,8 +106,62 @@ Iterating between 2 aforemention Velocity Verlet Algorithm following provided di
 </table>
 </div>
 
-From the diagram solving for $\vec{F}_{n+1}$ from $\vec{n}_{n+1}$ is achievable by calculating the gradient of Lennard-Jones Potential Function.
 
+From the diagram solving for $\vec{F}\_{n+1}$ from $\vec{r}\_{n+1}$ is achievable by calculating the gradient of Lennard-Jones Potential Function:
+
+* Given the potential:
+
+$$
+V(r) = 4\epsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
+$$
+
+$$
+\vec{F} = -\nabla V = - \left( \frac{\partial V}{\partial x}\hat{i} + \frac{\partial V}{\partial y}\hat{j} + \frac{\partial V}{\partial z}\hat{k} \right)
+$$
+
+* Calculate the x-component $\vec{F}_x$ with chain rule. Define the scalar distance $r = \sqrt{x^2 + y^2 + z^2}$:
+
+$$
+\begin{aligned}
+\vec{F}_x &= - \frac{\partial V(r)}{\partial x}\hat{i} = - \left( \frac{dV(r)}{dr} \cdot \frac{\partial r}{\partial x} \right)\hat{i}
+\end{aligned}
+$$
+
+$$
+\frac{\partial r}{\partial x} = \frac{\partial}{\partial x}\sqrt{x^2+y^2+z^2} = \frac{x}{\sqrt{x^2+y^2+z^2}} = \frac{x}{r}
+$$
+
+$$
+\vec{F}_x = - \left( \frac{dV(r)}{dr} \cdot \frac{x}{r} \right)\hat{i}
+$$
+
+* Repeat this for all three dimension:
+
+$$
+\begin{aligned}
+\vec{F} &= \vec{F}_x + \vec{F}_y + \vec{F}_z = - \frac{dV}{dr} \left( \frac{x}{r}\hat{i} + \frac{y}{r}\hat{j} + \frac{z}{r}\hat{k} \right) = - \frac{dV}{dr} \left( \frac{\vec{r}}{r} \right)
+\end{aligned}
+$$
+
+* Where $\frac{\vec{r}}{r}$ being the unit vector representing the direction of the collision. Then, Calculate the scalar derivative $\frac{dV}{dr}$ from the potential function:
+
+$$
+\begin{aligned}
+\frac{dV}{dr} &= \frac{d}{dr} \left( 4\epsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \right) = 4\epsilon \left[ 12\sigma^{12}(-r^{-13}) - 6\sigma^6(-r^{-7}) \right] = -\frac{24\epsilon}{r} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
+\end{aligned}
+$$
+
+* Substitute back into the force vector equation:
+
+$$
+\vec{F} = - \left( -\frac{24\epsilon}{r} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \right) \frac{\vec{r}}{r}
+$$
+
+$$
+\vec{F} = \frac{24\epsilon}{r^2} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \vec{r}
+$$
+
+By combining this result with Velocity Verlet recursive funcion, any $\vec{r}(t), \vec{v}{t}, \vec{a}{t}$ will be solveable.
 
 
 
