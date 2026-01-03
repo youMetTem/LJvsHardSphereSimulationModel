@@ -161,7 +161,7 @@ $$
 \vec{F} = \frac{24\epsilon}{r^2} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \vec{r}
 $$
 
-By combining this result with Velocity Verlet recursive funcion, any $\vec{r}(t), \vec{v}{t}, \vec{a}{t}$ will be solveable.
+By combining this result with Velocity Verlet recursive funcion, any $\vec{r}(t), \vec{v}(t), \vec{a}(t)$ will be solveable.
 
 
 
@@ -210,6 +210,17 @@ $$
 $$
 
 For detailed derivation refer to my previous project in the [Particle-Particle Collisions](https://github.com/youMetTem/NumericalMBPDFreconSimulation/tree/main?tab=readme-ov-file#particle-particle-collisions) Section
+
+
+### Data Structure & Vectorization
+...
+
+### Comparative Numerical Reconstruction
+...
+
+### Visualization and Output
+...
+
 
 
 
