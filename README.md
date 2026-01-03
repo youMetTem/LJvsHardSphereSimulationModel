@@ -37,7 +37,7 @@ $$
 To statistically validate that a molecular dynamic simulation is accurate, the distribution of particle speeds from the simulation is compared against the theoretical *Maxwell-Boltzmann Distribution*.
 
 ### The Hard-Sphere Model
-The Hard-Sphere model describes a system of particles that interact only through perfect collisions. The interaction potential $V(r)$ is discontinous:
+The Hard-Sphere model describes a system of particles that interact only through perfect collisions. As demonstrated in my [previous work](https://github.com/youMetTem/NumericalMBPDFreconSimulation). The interaction potential $V(r)$ is discontinous:
 
 $$
 V_{Hard-Sphere}(r) =
@@ -63,8 +63,9 @@ This potential is characterized by two terms:
 1. Repulsion ($(\sigma/r)^{12}$): Modeling the Pauli exclusion principle.
 2. Attraction ($(\sigma/r)^{6}$): Modeling long-range Van der Waals interaction.
 
-With Modeling of Van der Waals interaction included, this allow particles to bind together when their kinetic energy drops below the potential energy barrier. The enables the simulation of particle clustering and phases transitions.
+With Modeling of Van der Waals interaction included in this project, it allow particles to bind together when their kinetic energy drops below the potential energy barrier. The enables 3D simulation of particle clustering and phases transitions.
 
+Furthermore, this study aims to compare the the accuracy of speeds distribution data obtain from both *Hard-Sphere* and *Lennard-Jones Potential* model. By reconstruct the speeds distribution of both model with *Cubic Spline interpolation* and compare them with the the Maxwell-Boltzmann theoretical distribution.
 
 ## Methodology
 in process ...
