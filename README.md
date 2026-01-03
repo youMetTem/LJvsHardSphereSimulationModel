@@ -97,7 +97,21 @@ $$
 \vec{v}_{n+1} = \vec{v}_{n} + \frac{1}{2} (\vec{a}_{n} + \vec{a}_{n+1})dt
 $$
 
-Iterating between 2 aforemention Velocity Verlet Algorithm following provided flowcharts, position and velocity at time $t$ will be solved.
+Iterating between 2 aforemention Velocity Verlet Algorithm following provided diagram below, position and velocity at any time $t>t_{0}$ will be solved.
+
+
+<div align = "center">
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/forMethodology/VVflowchart.png" height="300px" alt="VVflowchart" style="object-fit: cover;">
+    </td>
+  </tr>
+</table>
+</div>
+
+From the diagram solving for $\vec{F}_{n+1}$ from $\vec{n}_{n+1}$ is achievable by calculating the gradient of Lennard-Jones Potential Function.
+
 
 
 
