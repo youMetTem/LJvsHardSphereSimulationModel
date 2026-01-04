@@ -426,19 +426,19 @@ The Lennard-Jones system consistenly equilibrated at a temperature lower than th
 
 Instead of artificial thermostatting, the methodology was adapted to a post-stabilization synchronization approach. The LJ system is allowed to stabilize and the fianl $T_{stable}$ is then measured and used to re-initialize the Hard-Sphere control group and the theoretical reference.
 
-#### Particle Trapped Upon Temperature Decreases (Remain an issue)
+#### Particle Trapped Upon Slow Temperature Decreases (Remain an issue)
 The cooling method used global velocity scaling ($v_{new} = \lambda \times v_{old}$). If scalling occurs while particles are in the steep repulsive region, they loose the kinetic energy necessary to rebound and separate.
 
 This create a kinetic trap where particles are frozen in high-energy overlapping state, unable to rearrange into a crystal structure even if the temperature dropping is not rapid. This confirm that valid crystallization require other method of temperature decreases, which I do plan to further study and fix this issue.
 
 <table>
   <tr>
-    <td width="50%" align="center" valign="middle">
-      Thermodynamic Drift (before resolved)
-      <img src="assets/forResults/01_fixedTemperature.png" width="100%" alt = "01_fixedTemperature.png"/>
+    <td width="65%" align="center" valign="middle">
+      Thermodynamic Drift (Before Resolved)
+      <img src="assets/forResults/01_fixedTemperature.png" height="600px" alt = "01_fixedTemperature.png"/>
     </td>
-    <td width="50%" align="center" valign="middle">
-      Particle Trapped (issue)
+    <td width="35%" align="center" valign="middle">
+      Particle Trapped (Remain an Issue)
       <img src="assets/forResults/trappedParticle.jpeg" width="100%" alt = "trappedParticle.jpeg"/>
     </td>
   </tr>
