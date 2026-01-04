@@ -1,7 +1,7 @@
 # Comparison of Lennard-Jones Potential and Hard-Sphere Models: Equilibrium Velocity Distributions and Thermal Properties
-The project extends my previous work, [Numerical Reconstruction of the Maxwell-Boltzmann Distribution via a 3D Monatomic Hard-Sphere Simulation](https://github.com/youMetTem/NumericalMBPDFreconSimulation), by replacing the hard-sphere interaction with Lennard-Jones potential. Both model of hard-sphere and Lennard-Jones potential are compared by evaluating how well each reproduce the theoretical Maxwell-Boltzmann velocity distribution.
+The project extends my previous work, [Numerical Reconstruction of the Maxwell-Boltzmann Distribution via a 3D Monatomic Hard-Sphere Simulation](https://github.com/youMetTem/NumericalMBPDFreconSimulation), by replacing the hard-sphere interaction with Lennard-Jones potential and utilize the Velocity Verlet Algorithm. Both model of hard-sphere and Lennard-Jones potential are compared by evaluating how well each reproduce the theoretical Maxwell-Boltzmann velocity distribution.
 
-Furthermore, to highlight the strengths and limitations of each motion model, this project also explores their thermal response to rapid temperature reduction (quenching). By visualizing 3D particle dynamics and observe how each model react as the temperature decreases.
+Furthermore, to highlight the strengths and limitations of each motion model, this project also explores their thermal response to rapid temperature reduction (quenching). By visualizing 3D particle dynamics simulation and observe how each model react as the temperature decreases.
 
 <table>
   <tr>
@@ -147,7 +147,7 @@ $$
 
 $$
 \begin{aligned}
-\frac{dV}{dr} &= \frac{d}{dr} \left( 4\epsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \right) = 4\epsilon \left[ 12\sigma^{12}(-r^{-13}) - 6\sigma^6(-r^{-7}) \right] = -\frac{24\epsilon}{r} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
+\frac{dV}{dr} = \frac{d}{dr} \left( 4\epsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \right) = 4\epsilon \left[ 12\sigma^{12}(-r^{-13}) - 6\sigma^6(-r^{-7}) \right] = -\frac{24\epsilon}{r} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
 \end{aligned}
 $$
 
@@ -213,22 +213,243 @@ For detailed derivation refer to my previous project in the [Particle-Particle C
 
 
 ### Data Structure & Vectorization
-...
+The system states are represented using **Numpy** $N$-dimension arrays. All mathematical operations are represented as vectorized linear algebra operation as well.
+1. **Position Matrix ($\mathbf{R}$)**: An $(N \times 3)$ array where the $i$-th row represents the coordinates of particle $i$.
+
+$$
+\mathbf{R}_{N \times 3} = 
+\begin{bmatrix} 
+\vdots & \vdots & \vdots \\
+r_{i,x} & r_{i,y} & r_{i,z} \\
+\vdots & \vdots & \vdots 
+\end{bmatrix} 
+$$
+
+$$
+\vec{r}_{i} = r_{i, x} \hat{i} + r_{i, y} \hat{j} + r_{i, z} \hat{k}
+$$
+
+2. **Velocity Matrix ($\mathbf{V}$)**: An $(N \times 3)$ array where the $i$-th row represents the velocity of particle $i$.
+
+$$
+\mathbf{V}_{N \times 3} = 
+\begin{bmatrix} 
+\vdots & \vdots & \vdots \\
+v_{i,x} & v_{i,y} & v_{i,z} \\
+\vdots & \vdots & \vdots 
+\end{bmatrix} 
+$$
+
+$$
+\vec{v}_{i} = v_{i, x} \hat{i} + v_{i, y} \hat{j} + v_{i, z} \hat{k}
+$$
+
+3. **Pairwise Displacement Tensor (LJ only) ($\Delta \mathbf{R}$)**: An $(N \times N \times 3)$ tensor is constructed to compute all pairwise displacement vectors simultaneously.
+
+$$
+\Delta \mathbf{R} =
+\begin{bmatrix}
+\vec{0} & \vec{r}_{1} - \vec{r}_{2} & \cdots & \vec{r}_{1} - \vec{r}_{N} \\
+\vec{r}_{2} - \vec{r}_{1} & \vec{0} & \cdots & \vec{r}_{2} - \vec{r}_{N} \\
+\vdots & \vdots & \ddots & \vdots \\
+\vec{r}_{N} - \vec{r}_{1} & \vec{r}_{N} - \vec{r}_{2} & \cdots & \vec{0}
+\end{bmatrix}=
+\begin{bmatrix}
+\begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix} & \begin{pmatrix} x_{12} \\ y_{12} \\ z_{12} \end{pmatrix} & \cdots & \begin{pmatrix} x_{1N} \\ y_{1N} \\ z_{1N} \end{pmatrix} \\
+\begin{pmatrix} x_{21} \\ y_{21} \\ z_{21} \end{pmatrix} & \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix} & \cdots & \begin{pmatrix} x_{2N} \\ y_{2N} \\ z_{2N} \end{pmatrix} \\
+\vdots & \vdots & \ddots & \vdots \\
+\begin{pmatrix} x_{N1} \\ y_{N1} \\ z_{N1} \end{pmatrix} & \begin{pmatrix} x_{N2} \\ y_{N2} \\ z_{N2} \end{pmatrix} & \cdots & \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix}
+\end{bmatrix}
+$$
+
+4. **Pairwise Force Interaction Tensor (LJ only) ($\mathbf{F}$)**: An $(N \times N \times 3)$ tensor is constructed to compute all pairweise displacement vectors simulataneously.
+
+$$
+\mathbf{F}_{pair} =
+\begin{bmatrix}
+\vec{0} & f(r_{12}) \cdot \vec{r}_{12} & \cdots & f(r_{1N}) \cdot \vec{r}_{1N} \\
+f(r_{21}) \cdot \vec{r}_{21} & \vec{0} & \cdots & f(r_{2N}) \cdot \vec{r}_{2N} \\
+\vdots & \vdots & \ddots & \vdots \\
+f(r_{N1}) \cdot \vec{r}_{N1} & f(r_{N2}) \cdot \vec{r}_{N2} & \cdots & \vec{0}
+\end{bmatrix}
+$$
+
+
 
 ### Comparative Numerical Reconstruction
-...
+With the Lennard-Jones Potential model is simulated in the Microcanonical Ensemble (NVE), the conversion of potential energy into kinetic energy which happens as the system stabilize causes the system's temperature to drift from its initial value $T_{initial}$
+
+#### Comparison Setup
+To ensure valid comparison at the same Temperature $T$ equilibirum thermal energy level, the following steps are done:
+1. **LJ Simulation Stabilization**: The Lennard-Jones Potential system is initialized with initial velocities matching the initial Temperture $T_{initial}$ and allowed to relax as the simulation is operated.
+2. **Stabilized Temperature Extraction**: The final Stabilized Temperature ($T_{stable}$) is calculated from the new $v_{rms}$ of the LJ model system.
+3. **Hard-Sphere model synchromization**: The Hard-Sphere simulation is then initialized using this exact new $T_{stable}$.
+4. **Theoretical Curve**: The Maxwell-boltzmann theoretical curve is recalculated using $T_{stable}$ to prevent systemetic temperature drift.
+
+#### Data Sampling
+To reconstruct PDF, the simulation of both model are run for 700 steps of iteration until the system reaches it equilibrium and all transients are eliminated, then data are collected for 50 samples for every 50 simulation iteration apart. Later, all data are stacked and combined into single large array, velocity magnitudes are then extracted and binned into histogram. Cubic Spline Interpolation and Error analysis are then applied to these data sets.
+
+#### Cubic Spline Interpolation
+To reconstruct the PDF without assuming the underlying physical with gaussian distribution or any type of regressions, I utilize Cubic Spline interpolation. Using the histogram bin midpoints as data set of $(x_i, y_i)$, the algorithm constructs a piecewise function $S_{i}(x)$ for each interval $[x_{i}, x_{i+1}]$:
+
+$$
+S_{i}(x) = a_i + b_i (x-x_i) + c_i (x-x_i)^2 + d_i (x-x_i)^3
+$$
+
+$$
+S(x) = 
+\begin{cases} 
+S_i(x) & x \in [x_i, x_{i+1}] \\
+S_{i+1}(x) & x \in [x_{i+1}, x_{i+2}] \\
+S_{i+2}(x) & x \in [x_{i+2}, x_{x+3}] \\
+\vdots & \vdots \\
+S_{n-1}(x) & x \in [x_{n-1}, x_n]
+\end{cases}
+$$
+
+
+The coefficients ($a_i, b_i, c_i, d_i$) are determined by applying countinuity constraints for the function, its first and second derivative at every datapoints.
+
+Additionally, due to a known limitation of polynomial interpolation method, including cubic spline, is **Unbounded Extrapolation**. While the spline accurately models the distribution within the sampled velocity range $[v_{min}, v_{max}]$, the polynomials inherently diverge towards $\pm \infty$ outside this domain. To counter against this issue, I resolve it by setting any prediction data outside the range of $[v_{min}, v_{max}]$ to 0 and remove any negative result probability.
+
+#### Error Analysis
+The quantitative divergence of each simulation from the theoretical Maxwell-Boltzmann PDF ($f_{MB}$) is calculated using the Mean Squared Error (MSE):
+
+$$
+MSE = \frac{1}{M} \sum_{k=1}^{M} \left( S(v_k) - f_{MB}(v_k) \right)^2
+$$
+
+Where $v_k$ represents the evaluation points along the velocity domain. This metric allow me to objectively determine which potential model better captures the thermodynamic behavior of the gas.
+
 
 ### Visualization and Output
-...
+#### Statistical and Visualization Output
+Data is aggregated into a composite visualization generated via **Matplotlib**. The output is divided into 2 coupled subplots sharing a common velcoity axis.
+1. Probability Density Comparison (Top Panel):
+   * **Theoretical Benchmark**: Maxwell-Boltzmann distribution for the stabilized temperature $T_{stable}$ is plotted as a dashed blue line, serving as the theoretical reference.
+   * **Simulated Models**: The cubic spline interpolations for both model datasets are overlaid on the same axes.
+2. Residual Analysis (Bottom Panel):
+   To visualize the deviations of each model from the theoretical curve, a residual plot is generated below the main distribution. The residual $R(v)$ is calculated as:
 
+$$
+R_{Hard-Sphere}(v) = PDF_{Hard-Sphere}(v) - PDF_{theoretical}(v)
+$$
 
+$$
+R_{LJ}(v) = PDF_{LJ}(v) - PDF_{theoretical}(v)
+$$
+
+3. Quantitative Report: the scripts also calculates the **Mean Square Error** (MSE) for both models against the theoretical curve. These values are reported directly to the standard output terminal to provide a quick numerical summary of the simulation's accuracy.
+
+#### 3D Dynamic Visualization Output
+In addition to statistical analysis, this project also utilize `VPython` to render a real-time 3D animated visualization of the particle dynamics. This environment is used to conduct three distinct simulations to observe particles behavior.
+1. **Equilibrium Simulation**: In the standard setup, the Lennard-Jones potential system is simulated in a Microcanonical ensemble without external interference
+2. **Lennard-Jones Potential Model Reaction to Rapid Quenching**: to observe LJ's model particles behavior upon rapid temperature drops, the simulation introduces a time-dependent cooling mechanism.
+
+   At every time step, the velocity vectors of all particles are scaled by a damping factor $\lambda < 1$, draining kinetic energy from the system over time:
+
+$$
+v_{new} = v_{old} \times \lambda (t)
+$$
+
+3. Hard-Sphere Model Reaction to Rapid Quenching: The same cooling mechanism from `2.` is applied to be observed and compare
+
+The simulations simulate Argon atoms instead of the default Helium in the statistical analysis. Due to its higher melting point, nano clustering, phase changes and droplet forming is better illustrated.
 
 
 ## Results
-in process ...
+### Statistical Accuracy
+As illustrated as in the following figure, both the Hard-Sphere and Lennard-Jones potential models successfully converged to the Maxwell-Boltzmann Distribution at stable temperature ($T_{stable}$). However, the Lennard-Jones potential model exhibuted slightly higher degree of accuracy as shown in the output MSE value. Both model depict negligibly low error margin observed across numerous sampling iteration. Provided several numerical key metrics:
+* **Max Residual Error**:
+  * Lennard-Jones Potential Model: $< 2.5 \times 10^{5}$
+  * Hard-Sphere Model: $< 2.5 \times 10^{5}$
+* **Mean Square Error (MSE)**: 
+  * Lennard-Jones Potential Model: $2.21 \times 10^{-11}$
+  * Hard-Sphere Model: $2.74 \times 10^{-11}$
+* Notable detail worth mentioning:
+  * Cubic Spline Residuals exhibiting tiny cone shape sinuiodal oscillation: This is most likely cause by approximating a transcendental function of exponential decay with piecewise polynomial, utlizing inappropriate interpolation method, regression model is the cause of this problem. 
+
+<div align = "center">
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/forResults/02_fittedTemperature.png" height="350px" alt="02_fittedTemperature.png" style="object-fit: cover;">
+    </td>
+  </tr>
+</table>
+</div>
+
+### Visual Analysis
+
+#### Lennard-Jones Potential Equilibrium Simulation without external interference:
+
+It is evident that particle trajectories exhibited clear deviations from linearity even when not in direct contact. As particles passed near one another, their paths curved slightly toward each other. This confirms the presence of the attractive Van der Waals interaction, a feature completely absent in the Hard-Sphere simulation model.
+
+<div align = "center">
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/forResults/visLJ3DconstTempSpeed.gif" height="400px" alt="02_fittedTemperature.png" style="object-fit: cover;">
+      insert link
+    </td>
+  </tr>
+</table>
+</div>
+
+
+#### Model Reaction to Rapid Quenching:
+
+* Lennard-Jones Potential Model
+The system responded to quenching by clumping together. As kinetic energy decreased, particles trapped in the potential wells of their neightbors could not escape, leading to the spontaneous formation of clumps and clusters. While clustering was observed, the final structure did not resemble a perfect crystalline lattice. Instead, particles formed disordered aggregates. I interpret it as an direct consequence of the rapid quenching rate. The system was cooled too quickly for particle to explore the energy landscape and find the global minimum, resulting in an amourphous solid structure, which mirrors real-world physical vapor deposition in rapid quenching.
+
+* Hard-Sphere Model
+Hard-Sphere system exhibited a simple freezing behavior. Particle slowed down and evetually stopped in their final ballistic linear position. No spatial rearrangement occured. This confirms that without an attractive potential, no cohesion or phase separation is possible regardless of temperature.
+
+<table>
+  <tr>
+    <td width="50%" align="center" valign="middle">
+      Rapid Quenching Lennard-Jones Potential Model
+      <img src="assets/forResults/visTempChangeLJ3DSpeed.gif" width="100%" alt = "visTempChangeLJ3DSpeed.gif"/>
+      insert link
+    </td>
+    <td width="50%" align="center" valign="middle">
+      Rapid Quenching Hard-Sphere Model
+      <img src="assets/forResults/visTempChangeHardSphere3DSpeed.gif" width="100%" alt = "visTempChangeHardSphere3DSpeed.gif"/>
+      insert link
+    </td>
+  </tr>
+</table>
+
+### Challenges and Limitations
+#### Thermodynamic Drift in NVM Ensemble (Solved)
+The Lennard-Jones system consistenly equilibrated at a temperature lower than the initial setpoint ($T_{stable} < T_{initial}$), invalidating direct comparisons with the Hard-Sphere model and the theoretical Maxwell-Boltzmann Distribution. The system is initialized in a non-equilibrium. As particle reach equilibrium part of the kinetic energy is converted into potential energy to conserve the Hamiltonian, naturally droping the temperature.
+
+Instead of artificial thermostatting, the methodology was adapted to a post-stabilization synchronization approach. The LJ system is allowed to stabilize and the fianl $T_{stable}$ is then measured and used to re-initialize the Hard-Sphere control group and the theoretical reference.
+
+#### Particle Trapped Upon Temperature Decreases (Remain an issue)
+The cooling method used global velocity scaling ($v_{new} = \lambda \times v_{old}$). If scalling occurs while particles are in the steep repulsive region, they loose the kinetic energy necessary to rebound and separate.
+
+This create a kinetic trap where particles are frozen in high-energy overlapping state, unable to rearrange into a crystal structure even if the temperature dropping is not rapid. This confirm that valid crystallization require other method of temperature decreases, which I do plan to further study and fix this issue.
+
+<table>
+  <tr>
+    <td width="50%" align="center" valign="middle">
+      Thermodynamic Drift (before resolved)
+      <img src="assets/forResults/01_fixedTemperature.png" width="100%" alt = "01_fixedTemperature.png"/>
+    </td>
+    <td width="50%" align="center" valign="middle">
+      Particle Trapped (issue)
+      <img src="assets/forResults/trappedParticle.jpeg" width="100%" alt = "trappedParticle.jpeg"/>
+    </td>
+  </tr>
+</table>
+
 
 ## Conclusion
 in process ...
+
+
+
 
 ## Installation & Usage
 ### 1. Prerequisites & Setup
