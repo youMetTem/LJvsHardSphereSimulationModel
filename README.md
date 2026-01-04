@@ -352,15 +352,21 @@ $$
 v_{new} = v_{old} * \lambda (t)
 $$
 
-3. Hard-Spherr Model Reaction to Rapid Quenching: The same cooling mechanism from `2.` is applied to be observed and compare
+3. Hard-Sphere Model Reaction to Rapid Quenching: The same cooling mechanism from `2.` is applied to be observed and compare
 
 
 
 ## Results
 in process ...
 
+
+
+
 ## Conclusion
 in process ...
+
+
+
 
 ## Installation & Usage
 ### 1. Prerequisites & Setup
