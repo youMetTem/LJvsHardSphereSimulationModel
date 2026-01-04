@@ -446,9 +446,9 @@ This create a kinetic trap where particles are frozen in high-energy overlapping
 
 
 ## Conclusion
-in process ...
+This project compared Hard-Sphere and Lennard-Jones Potential models for simulating particle dynamic by numerical method. While both reproduced the Maxwell-Botlzmann distribution, statistical analysis showed the Lennard-Jones Potential model was more accurate due to its continous attractive and repulsive forces, which enable smoother and more realistic thermalization.
 
-
+In 3D simulations, rapid cooling revealed a key difference: Hard-Sphere particles simple stopped, whereas Lennard-Jones Potential particles formed clusters, demonstrating that attractive forces are essential for modeling phase changes like droplet formation. Although fast cooling led to disordered clumps rather than crystals, this highlights opportunities ofr improved temperature control in future work. Overall, the Lennard-Jones Potential model better captures complex thermodynamic behavior.
 
 
 ## Installation & Usage
