@@ -343,13 +343,13 @@ $$
 
 #### 3D Dynamic Visualization Output
 In addition to statistical analysis, this project also utilize `VPython` to render a real-time 3D animated visualization of the particle dynamics. This environment is used to conduct three distinct simulations to observe particles behavior.
-1. Equilibrium Simulation: In the standard setup, the Lennard-Jones potential system is simulated in a Microcanonical ensemble without external interference
-2. Lennard-Jones Potential Model Reaction to Rapid Quenching: to observe LJ's model particles behavior upon rapid temperature drops, the simulation introduces a time-dependent cooling mechanism.
+1. **Equilibrium Simulation**: In the standard setup, the Lennard-Jones potential system is simulated in a Microcanonical ensemble without external interference
+2. **Lennard-Jones Potential Model Reaction to Rapid Quenching**: to observe LJ's model particles behavior upon rapid temperature drops, the simulation introduces a time-dependent cooling mechanism.
 
    At every time step, the velocity vectors of all particles are scaled by a damping factor $\lambda < 1$, draining kinetic energy from the system over time:
 
 $$
-v_{new} = v_{old} * \lambda (t)
+v_{new} = v_{old} \times \lambda (t)
 $$
 
 3. Hard-Sphere Model Reaction to Rapid Quenching: The same cooling mechanism from `2.` is applied to be observed and compare
@@ -358,9 +358,91 @@ The simulations simulate Argon atoms instead of the default Helium in the statis
 
 
 ## Results
-in process ...
+### Statistical Accuracy
+As illustrated as in the following figure, both the Hard-Sphere and Lennard-Jones potential models successfully converged to the Maxwell-Boltzmann Distribution at stable temperature ($T_{stable}$). However, the Lennard-Jones potential model exhibuted slightly higher degree of accuracy as shown in the output MSE value. Both model depict negligibly low error margin observed across numerous sampling iteration. Provided several numerical key metrics:
+* **Max Residual Error**:
+  * Lennard-Jones Potential Model: $< 2.5 \times 10^{5}$
+  * Hard-Sphere Model: $< 2.5 \times 10^{5}$
+* **Mean Square Error (MSE)**: 
+  * Lennard-Jones Potential Model: $2.21 \times 10^{-11}$
+  * Hard-Sphere Model: $2.74 \times 10^{-11}$
+* Notable detail worth mentioning:
+  * Cubic Spline Residuals exhibiting tiny cone shape sinuiodal oscillation: This is most likely cause by approximating a transcendental function of exponential decay with piecewise polynomial, utlizing inappropriate interpolation method, regression model is the cause of this problem. 
+
+<div align = "center">
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/forResults/02_fittedTemperature.png" height="350px" alt="02_fittedTemperature.png" style="object-fit: cover;">
+    </td>
+  </tr>
+</table>
+</div>
+
+### Visual Analysis
+
+#### Lennard-Jones Potential Equilibrium Simulation without external interference:
+
+It is evident that particle trajectories exhibited clear deviations from linearity even when not in direct contact. As particles passed near one another, their paths curved slightly toward each other. This confirms the presence of the attractive Van der Waals interaction, a feature completely absent in the Hard-Sphere simulation model.
+
+<div align = "center">
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/forResults/visLJ3DconstTempSpeed.gif" height="400px" alt="02_fittedTemperature.png" style="object-fit: cover;">
+      insert link
+    </td>
+  </tr>
+</table>
+</div>
 
 
+#### Model Reaction to Rapid Quenching:
+
+* Lennard-Jones Potential Model
+The system responded to quenching by clumping together. As kinetic energy decreased, particles trapped in the potential wells of their neightbors could not escape, leading to the spontaneous formation of clumps and clusters. While clustering was observed, the final structure did not resemble a perfect crystalline lattice. Instead, particles formed disordered aggregates. I interpret it as an direct consequence of the rapid quenching rate. The system was cooled too quickly for particle to explore the energy landscape and find the global minimum, resulting in an amourphous solid structure, which mirrors real-world physical vapor deposition in rapid quenching.
+
+* Hard-Sphere Model
+Hard-Sphere system exhibited a simple freezing behavior. Particle slowed down and evetually stopped in their final ballistic linear position. No spatial rearrangement occured. This confirms that without an attractive potential, no cohesion or phase separation is possible regardless of temperature.
+
+<table>
+  <tr>
+    <td width="50%" align="center" valign="middle">
+      Rapid Quenching Lennard-Jones Potential Model
+      <img src="assets/forResults/visTempChangeLJ3DSpeed.gif" width="100%" alt = "visTempChangeLJ3DSpeed.gif"/>
+      insert link
+    </td>
+    <td width="50%" align="center" valign="middle">
+      Rapid Quenching Hard-Sphere Model
+      <img src="assets/forResults/visTempChangeHardSphere3DSpeed.gif" width="100%" alt = "visTempChangeHardSphere3DSpeed.gif"/>
+      insert link
+    </td>
+  </tr>
+</table>
+
+### Challenges and Limitations
+#### Thermodynamic Drift in NVM Ensemble (Solved)
+The Lennard-Jones system consistenly equilibrated at a temperature lower than the initial setpoint ($T_{stable} < T_{initial}$), invalidating direct comparisons with the Hard-Sphere model and the theoretical Maxwell-Boltzmann Distribution. The system is initialized in a non-equilibrium. As particle reach equilibrium part of the kinetic energy is converted into potential energy to conserve the Hamiltonian, naturally droping the temperature.
+
+Instead of artificial thermostatting, the methodology was adapted to a post-stabilization synchronization approach. The LJ system is allowed to stabilize and the fianl $T_{stable}$ is then measured and used to re-initialize the Hard-Sphere control group and the theoretical reference.
+
+#### Particle Trapped Upon Temperature Decreases (Remain an issue)
+The cooling method used global velocity scaling ($v_{new} = \lambda \times v_{old}$). If scalling occurs while particles are in the steep repulsive region, they loose the kinetic energy necessary to rebound and separate.
+
+This create a kinetic trap where particles are frozen in high-energy overlapping state, unable to rearrange into a crystal structure even if the temperature dropping is not rapid. This confirm that valid crystallization require other method of temperature decreases, which I do plan to further study and fix this issue.
+
+<table>
+  <tr>
+    <td width="50%" align="center" valign="middle">
+      Thermodynamic Drift (before resolved)
+      <img src="assets/forResults/01_fixedTemperature.png" width="100%" alt = "01_fixedTemperature.png"/>
+    </td>
+    <td width="50%" align="center" valign="middle">
+      Particle Trapped (issue)
+      <img src="assets/forResults/trappedParticle.jpeg" width="100%" alt = "trappedParticle.jpeg"/>
+    </td>
+  </tr>
+</table>
 
 
 ## Conclusion
