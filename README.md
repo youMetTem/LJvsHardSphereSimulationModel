@@ -390,7 +390,7 @@ It is evident that particle trajectories exhibited clear deviations from lineari
   <tr>
     <td align="center">
       <img src="assets/forResults/visLJ3DconstTempSpeed.gif" height="400px" alt="02_fittedTemperature.png" style="object-fit: cover;">
-      insert link
+      <a href="https://youtube.com/shorts/vWlpTpxOJlw?feature=share">Better Quality Video</a>
     </td>
   </tr>
 </table>
@@ -410,12 +410,12 @@ Hard-Sphere system exhibited a simple freezing behavior. Particle slowed down an
     <td width="50%" align="center" valign="middle">
       Rapid Quenching Lennard-Jones Potential Model
       <img src="assets/forResults/visTempChangeLJ3DSpeed.gif" width="100%" alt = "visTempChangeLJ3DSpeed.gif"/>
-      insert link
+      <a href="https://youtube.com/shorts/Ec__Y7lUqe8?feature=share">Better Quality Video</a>
     </td>
     <td width="50%" align="center" valign="middle">
       Rapid Quenching Hard-Sphere Model
       <img src="assets/forResults/visTempChangeHardSphere3DSpeed.gif" width="100%" alt = "visTempChangeHardSphere3DSpeed.gif"/>
-      insert link
+      <a href="https://youtube.com/shorts/hVQZPgusziA?feature=share">Better Quality Video</a>
     </td>
   </tr>
 </table>
