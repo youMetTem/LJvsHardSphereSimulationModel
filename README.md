@@ -319,7 +319,7 @@ $$
 MSE = \frac{1}{M} \sum_{k=1}^{M} \left( S(v_k) - f_{MB}(v_k) \right)^2
 $$
 
-Where $v_k$ represents the evaluation points along the velocity domain. This metric provides a numerical value for the "goodness of fit," allowing us to objectively determine which potential model better captures the thermodynamic behavior of the gas.
+Where $v_k$ represents the evaluation points along the velocity domain. This metric allow me to objectively determine which potential model better captures the thermodynamic behavior of the gas.
 
 
 ### Visualization and Output
@@ -343,7 +343,18 @@ $$
 
 #### 3D Dynamic Visualization Output
 In addition to statistical analysis, this project also utilize `VPython` to render a real-time 3D animated visualization of the particle dynamics. This environment is used to conduct three distinct simulations to observe particles behavior.
-1 2 3 
+1. Equilibrium Simulation: In the standrad setup, the Lennard-Jones potential system is simulated in a Microcanonical ensemble without external interference
+2. Lennard-Jones Potential Model Reaction to Rapid Quenching: to observe LJ's model particles behavior upon rapid temperature drops, the simulation introduces a time-dependent cooling mechanism.
+
+   At every time step, the velocity vectors of all particles are scaled by a damping factor $\lambda < 1$, draining kinetic energy from the system over time:
+
+$$
+v_{new} = v_{old} * \lambda (t)
+$$
+
+3. Hard-Spherr Model Reaction to Rapid Quenching: The same cooling mechanism from `2.` is applied to be observed and compare
+
+
 
 ## Results
 in process ...
