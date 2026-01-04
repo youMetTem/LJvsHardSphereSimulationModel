@@ -213,10 +213,114 @@ For detailed derivation refer to my previous project in the [Particle-Particle C
 
 
 ### Data Structure & Vectorization
-...
+The system states are represented using **Numpy** $N$-dimension arrays. All mathematical operations are represented as vectorized linear algebra operation as well.
+1. **Position Matrix ($\mathbf{R}$)**: An $(N \times 3)$ array where the $i$-th row represents the coordinates of particle $i$.
+
+$$
+\mathbf{R}_{N \times 3} = 
+\begin{bmatrix} 
+\vdots & \vdots & \vdots \\
+r_{i,x} & r_{i,y} & r_{i,z} \\
+\vdots & \vdots & \vdots 
+\end{bmatrix} 
+$$
+
+$$
+\vec{r}_{i} = r_{i, x} \hat{i} + r_{i, y} \hat{j} + r_{i, z} \hat{k}
+$$
+
+2. **Velocity Matrix ($\mathbf{V}$)**: An $(N \times 3)$ array where the $i$-th row represents the velocity of particle $i$.
+
+$$
+\mathbf{V}_{N \times 3} = 
+\begin{bmatrix} 
+\vdots & \vdots & \vdots \\
+v_{i,x} & v_{i,y} & v_{i,z} \\
+\vdots & \vdots & \vdots 
+\end{bmatrix} 
+$$
+
+$$
+\vec{v}_{i} = v_{i, x} \hat{i} + v_{i, y} \hat{j} + v_{i, z} \hat{k}
+$$
+
+3. **Pairwise Displacement Tensor (LJ only) ($\Delta \mathbf{R}$)**: An $(N \times N \times 3)$ tensor is constructed to compute all pairwise displacement vectors simultaneously.
+
+$$
+\Delta \mathbf{R} =
+\begin{bmatrix}
+\vec{0} & \vec{r}_{1} - \vec{r}_{2} & \cdots & \vec{r}_{1} - \vec{r}_{N} \\
+\vec{r}_{2} - \vec{r}_{1} & \vec{0} & \cdots & \vec{r}_{2} - \vec{r}_{N} \\
+\vdots & \vdots & \ddots & \vdots \\
+\vec{r}_{N} - \vec{r}_{1} & \vec{r}_{N} - \vec{r}_{2} & \cdots & \vec{0}
+\end{bmatrix}=
+\begin{bmatrix}
+\begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix} & \begin{pmatrix} x_{12} \\ y_{12} \\ z_{12} \end{pmatrix} & \cdots & \begin{pmatrix} x_{1N} \\ y_{1N} \\ z_{1N} \end{pmatrix} \\
+\begin{pmatrix} x_{21} \\ y_{21} \\ z_{21} \end{pmatrix} & \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix} & \cdots & \begin{pmatrix} x_{2N} \\ y_{2N} \\ z_{2N} \end{pmatrix} \\
+\vdots & \vdots & \ddots & \vdots \\
+\begin{pmatrix} x_{N1} \\ y_{N1} \\ z_{N1} \end{pmatrix} & \begin{pmatrix} x_{N2} \\ y_{N2} \\ z_{N2} \end{pmatrix} & \cdots & \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix}
+\end{bmatrix}
+$$
+
+4. **Pairwise Force Interaction Tensor (LJ only) ($\mathbf{F}$)**: An $(N \times N \times 3)$ tensor is constructed to compute all pairweise displacement vectors simulataneously.
+
+$$
+\mathbf{F}_{pair} =
+\begin{bmatrix}
+\vec{0} & f(r_{12}) \cdot \vec{r}_{12} & \cdots & f(r_{1N}) \cdot \vec{r}_{1N} \\
+f(r_{21}) \cdot \vec{r}_{21} & \vec{0} & \cdots & f(r_{2N}) \cdot \vec{r}_{2N} \\
+\vdots & \vdots & \ddots & \vdots \\
+f(r_{N1}) \cdot \vec{r}_{N1} & f(r_{N2}) \cdot \vec{r}_{N2} & \cdots & \vec{0}
+\end{bmatrix}
+$$
+
+
 
 ### Comparative Numerical Reconstruction
-...
+With the Lennard-Jones Potential model is simulated in the Microcanonical Ensemble (NVE), the conversion of potential energy into kinetic energy which happens as the system stabilize causes the system's temperature to drift from its initial value $T_{initial}$
+
+#### Comparison Setup
+To ensure valid comparison at the same Temperature $T$ equilibirum thermal energy level, the following steps are done:
+1. **LJ Simulation Stabilization**: The Lennard-Jones Potential system is initialized with initial velocities matching the initial Temperture $T_{initial}$ and allowed to relax as the simulation is operated.
+2. **Stabilized Temperature Extraction**: The final Stabilized Temperature ($T_{stable}$) is calculated from the new $v_{rms}$ of the LJ model system.
+3. **Hard-Sphere model synchromization**: The Hard-Sphere simulation is then initialized using this exact new $T_{stable}$.
+4. **Theoretical Curve**: The Maxwell-boltzmann theoretical curve is recalculated using $T_{stable}$ to prevent systemetic temperature drift.
+
+#### Data Sampling
+To reconstruct PDF, the simulation of both model are run for 700 steps of iteration until the system reaches it equilibrium and all transients are eliminated, then data are collected for 50 samples for every 50 simulation iteration apart. Later, all data are stacked and combined into single large array, velocity magnitudes are then extracted and binned into histogram. Cubic Spline Interpolation and Error analysis are then applied to these data sets.
+
+#### Cubic Spline Interpolation
+To reconstruct the PDF without assuming the underlying physical with gaussian distribution or any type of regressions, I utilize Cubic Spline interpolation. Using the histogram bin midpoints as data set of $(x_i, y_i)$, the algorithm constructs a piecewise function $S_{i}(x)$ for each interval $[x_{i}, x_{i+1}]$:
+
+$$
+S_{i}(x) = a_i + b_i (x-x_i) + c_i (x-x_i)^2 + d_i (x-x_i)^3
+$$
+
+$$
+S(x) = 
+\begin{cases} 
+S_i(x) & x \in [x_i, x_{i+1}] \\
+S_{i+1}(x) & x \in [x_{i+1}, x_{i+2}] \\
+S_{i+2}(x) & x \in [x_{i+2}, x_{x+3}] \\
+\vdots & \vdots \\
+S_{n-1}(x) & x \in [x_{n-1}, x_n]
+\end{cases}
+$$
+
+
+The coefficients ($a_i, b_i, c_i, d_i$) are determined by applying countinuity constraints for the function, its first and second derivative at every datapoints.
+
+Additionally, due to a known limitation of polynomial interpolation method, including cubic spline, is **Unbounded Extrapolation**. While the spline accurately models the distribution within the sampled velocity range $[v_{min}, v_{max}]$, the polynomials inherently diverge towards $\pm \infty$ outside this domain. To counter against this issue, I resolve it by setting any prediction data outside the range of $[v_{min}, v_{max}]$ to 0 and remove any negative result probability.
+
+#### Error Analysis
+The quantitative divergence of each simulation from the theoretical Maxwell-Boltzmann PDF ($f_{MB}$) is calculated using the Mean Squared Error (MSE):
+
+$$
+MSE = \frac{1}{M} \sum_{k=1}^{M} \left( S(v_k) - f_{MB}(v_k) \right)^2
+$$
+
+Where $v_k$ represents the evaluation points along the velocity domain. This metric provides a numerical value for the "goodness of fit," allowing us to objectively determine which potential model better captures the thermodynamic behavior of the gas.
+
 
 ### Visualization and Output
 ...
