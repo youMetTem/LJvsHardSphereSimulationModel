@@ -147,7 +147,7 @@ $$
 
 $$
 \begin{aligned}
-\frac{dV}{dr} &= \frac{d}{dr} \left( 4\epsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \right) = 4\epsilon \left[ 12\sigma^{12}(-r^{-13}) - 6\sigma^6(-r^{-7}) \right] = -\frac{24\epsilon}{r} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
+\frac{dV}{dr} = \frac{d}{dr} \left( 4\epsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right] \right) = 4\epsilon \left[ 12\sigma^{12}(-r^{-13}) - 6\sigma^6(-r^{-7}) \right] = -\frac{24\epsilon}{r} \left[ 2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6 \right]
 \end{aligned}
 $$
 
@@ -323,10 +323,27 @@ Where $v_k$ represents the evaluation points along the velocity domain. This met
 
 
 ### Visualization and Output
-...
+#### Statistical and Visualization Output
+Data is aggregated into a composite visualization generated via **Matplotlib**. The output is divided into 2 coupled subplots sharing a common velcoity axis.
+1. Probability Density Comparison (Top Panel):
+   * **Theoretical Benchmark**: Maxwell-Boltzmann distribution for the stabilized temperature $T_{stable}$ is plotted as a dashed blue line, serving as the theoretical reference.
+   * **Simulated Models**: The cubic spline interpolations for both odel datasets are overlaid on the same axes.
+2. Residual Analysis (Bottom Panel):
+   To visualize the deviations of each model from the theoretical curve, a residual plot is generated below the main distribution. The residual $R(v)$ is calculated as:
 
+$$
+R_{Hard-Sphere}(v) = PDF_{Hard-Sphere}(v) - PDF_{theoretical}(v)
+$$
 
+$$
+R_{LJ}(v) = PDF_{LJ}(v) - PDF_{theoretical}(v)
+$$
 
+3. Quantitative Report: the scripts also calculates the **Mean Square Error** (MSE) for both models against the theoretical curve. These values are reported directly to the standard output terminal to provide a quick numerical summary of the simulation's accuracy.
+
+#### 3D Dynamic Visualization Output
+In addition to statistical analysis, this project also utilize `VPython` to render a real-time 3D animated visualization of the particle dynamics. This environment is used to conduct three distinct simulations to observe particles behavior.
+1 2 3 
 
 ## Results
 in process ...
