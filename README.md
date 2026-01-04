@@ -343,7 +343,7 @@ $$
 
 #### 3D Dynamic Visualization Output
 In addition to statistical analysis, this project also utilize `VPython` to render a real-time 3D animated visualization of the particle dynamics. This environment is used to conduct three distinct simulations to observe particles behavior.
-1. Equilibrium Simulation: In the standrad setup, the Lennard-Jones potential system is simulated in a Microcanonical ensemble without external interference
+1. Equilibrium Simulation: In the standard setup, the Lennard-Jones potential system is simulated in a Microcanonical ensemble without external interference
 2. Lennard-Jones Potential Model Reaction to Rapid Quenching: to observe LJ's model particles behavior upon rapid temperature drops, the simulation introduces a time-dependent cooling mechanism.
 
    At every time step, the velocity vectors of all particles are scaled by a damping factor $\lambda < 1$, draining kinetic energy from the system over time:
@@ -354,6 +354,7 @@ $$
 
 3. Hard-Sphere Model Reaction to Rapid Quenching: The same cooling mechanism from `2.` is applied to be observed and compare
 
+The simulations simulate Argon atoms instead of the default Helium in the statistical analysis. Due to its higher melting point, nano clustering, phase changes and droplet forming is better illustrated.
 
 
 ## Results
