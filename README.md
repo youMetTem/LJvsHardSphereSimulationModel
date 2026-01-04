@@ -387,12 +387,13 @@ It is evident that particle trajectories exhibited clear deviations from lineari
 
 <div align = "center">
 <table>
-  <tr>
-    <td align="center">
-      <img src="assets/forResults/visLJ3DconstTempSpeed.gif" height="400px" alt="02_fittedTemperature.png" style="object-fit: cover;">
-      <a href="https://youtube.com/shorts/vWlpTpxOJlw?feature=share">Better Quality Video</a>
-    </td>
-  </tr>
+  <tr>
+    <td align="center" valign="middle">
+      <img src="assets/forResults/visLJ3DconstTempSpeed.gif" height="400px" alt="02_fittedTemperature.png" style="object-fit: cover;">
+      <br>
+      <a href="https://youtube.com/shorts/vWlpTpxOJlw?feature=share">Better Quality Video</a>
+    </td>
+  </tr>
 </table>
 </div>
 
