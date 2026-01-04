@@ -327,7 +327,7 @@ Where $v_k$ represents the evaluation points along the velocity domain. This met
 Data is aggregated into a composite visualization generated via **Matplotlib**. The output is divided into 2 coupled subplots sharing a common velcoity axis.
 1. Probability Density Comparison (Top Panel):
    * **Theoretical Benchmark**: Maxwell-Boltzmann distribution for the stabilized temperature $T_{stable}$ is plotted as a dashed blue line, serving as the theoretical reference.
-   * **Simulated Models**: The cubic spline interpolations for both odel datasets are overlaid on the same axes.
+   * **Simulated Models**: The cubic spline interpolations for both model datasets are overlaid on the same axes.
 2. Residual Analysis (Bottom Panel):
    To visualize the deviations of each model from the theoretical curve, a residual plot is generated below the main distribution. The residual $R(v)$ is calculated as:
 
