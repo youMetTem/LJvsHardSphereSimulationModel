@@ -262,7 +262,7 @@ $$
 \end{bmatrix}
 $$
 
-4. **Pairwise Force Interaction Tensor (LJ only) ($\mathbf{F}$)**: An $(N \times N \times 3)$ tensor is constructed to compute all pairweise displacement vectors simulataneously.
+4. **Pairwise Force Interaction Tensor (LJ only) ($\mathbf{F}$)**: An $(N \times N \times 3)$ tensor is constructed to compute all pairwise displacement vectors simulataneously.
 
 $$
 \mathbf{F}_{pair} =
@@ -290,7 +290,7 @@ To ensure valid comparison at the same Temperature $T$ equilibirum thermal energ
 To reconstruct PDF, the simulation of both model are run for 700 steps of iteration until the system reaches it equilibrium and all transients are eliminated, then data are collected for 50 samples for every 50 simulation iteration apart. Later, all data are stacked and combined into single large array, velocity magnitudes are then extracted and binned into histogram. Cubic Spline Interpolation and Error analysis are then applied to these data sets.
 
 #### Cubic Spline Interpolation
-To reconstruct the PDF without assuming the underlying physical with gaussian distribution or any type of regressions, I utilize Cubic Spline interpolation. Using the histogram bin midpoints as data set of $(x_i, y_i)$, the algorithm constructs a piecewise function $S_{i}(x)$ for each interval $[x_{i}, x_{i+1}]$:
+To reconstruct the PDF without assuming the underlying physical relation with gaussian distribution or any type of regressions, I utilize Cubic Spline interpolation. Using the histogram bin midpoints as data set of $(x_i, y_i)$, the algorithm constructs a piecewise function $S_{i}(x)$ for each interval $[x_{i}, x_{i+1}]$:
 
 $$
 S_{i}(x) = a_i + b_i (x-x_i) + c_i (x-x_i)^2 + d_i (x-x_i)^3
@@ -359,7 +359,7 @@ The simulations simulate Argon atoms instead of the default Helium in the statis
 
 ## Results
 ### Statistical Accuracy
-As illustrated as in the following figure, both the Hard-Sphere and Lennard-Jones potential models successfully converged to the Maxwell-Boltzmann Distribution at stable temperature ($T_{stable}$). However, the Lennard-Jones potential model exhibuted slightly higher degree of accuracy as shown in the output MSE value. Both model depict negligibly low error margin observed across numerous sampling iteration. Provided several numerical key metrics:
+As illustrated as in the following figure, both the Hard-Sphere and Lennard-Jones potential models successfully converged to the Maxwell-Boltzmann Distribution at stable temperature ($T_{stable}$). However, the Lennard-Jones potential model exhibited slightly higher degree of accuracy as shown in the output MSE value. Both model depict negligibly low error margin observed across numerous sampling iteration. Provided several numerical key metrics:
 * **Max Residual Error**:
   * Lennard-Jones Potential Model: $< 2.5 \times 10^{5}$
   * Hard-Sphere Model: $< 2.5 \times 10^{5}$
@@ -423,7 +423,7 @@ Hard-Sphere system exhibited a simple freezing behavior. Particle slowed down an
 
 ### Challenges and Limitations
 #### Thermodynamic Drift in NVM Ensemble (Solved)
-The Lennard-Jones system consistenly equilibrated at a temperature lower than the initial setpoint ($T_{stable} < T_{initial}$), invalidating direct comparisons with the Hard-Sphere model and the theoretical Maxwell-Boltzmann Distribution. The system is initialized in a non-equilibrium. As particle reach equilibrium part of the kinetic energy is converted into potential energy to conserve the Hamiltonian, naturally droping the temperature.
+The Lennard-Jones system consistenly equilibrated at a temperature lower than the initial setpoint ($T_{stable} < T_{initial}$), invalidating direct comparisons with the Hard-Sphere model and the theoretical Maxwell-Boltzmann Distribution. The system is initialized in a non-equilibrium. As particle reach equilibrium, part of the kinetic energy is converted into potential energy to conserve the Hamiltonian, naturally droping the temperature.
 
 Instead of artificial thermostatting, the methodology was adapted to a post-stabilization synchronization approach. The LJ system is allowed to stabilize and the fianl $T_{stable}$ is then measured and used to re-initialize the Hard-Sphere control group and the theoretical reference.
 
@@ -447,9 +447,9 @@ This create a kinetic trap where particles are frozen in high-energy overlapping
 
 
 ## Conclusion
-This project compared Hard-Sphere and Lennard-Jones Potential models for simulating particle dynamic by numerical method. While both reproduced the Maxwell-Botlzmann distribution, statistical analysis showed the Lennard-Jones Potential model was more accurate due to its continous attractive and repulsive forces, which enable smoother and more realistic thermalization.
+This project compared Hard-Sphere and Lennard-Jones Potential models for simulating particle dynamic by numerical method. While both reproduced the Maxwell-Boltzmann distribution, statistical analysis showed the Lennard-Jones Potential model was more accurate due to its continous attractive and repulsive forces, which enable smoother and more realistic thermalization.
 
-In 3D simulations, rapid cooling revealed a key difference: Hard-Sphere particles simple stopped, whereas Lennard-Jones Potential particles formed clusters, demonstrating that attractive forces are essential for modeling phase changes like droplet formation. Although fast cooling led to disordered clumps rather than crystals, this highlights opportunities ofr improved temperature control in future work. Overall, the Lennard-Jones Potential model better captures complex thermodynamic behavior.
+In 3D simulations, rapid cooling revealed a key difference: Hard-Sphere particles simply stopped, whereas Lennard-Jones Potential particles formed clusters, demonstrating that attractive forces are essential for modeling phase changes like droplet formation. Although fast cooling led to disordered clumps rather than crystals, this highlights opportunities for improved temperature control in future work. Overall, the Lennard-Jones Potential model better captures complex thermodynamic behavior.
 
 
 ## Installation & Usage
